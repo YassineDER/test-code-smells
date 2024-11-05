@@ -6,8 +6,12 @@ import android.os.Bundle;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+
+import java.sql.DriverManager;
+import java.sql.SQLException;
 
 public class MainActivity extends AppCompatActivity {
     private EditText editTextUsername;
@@ -29,6 +33,16 @@ public class MainActivity extends AppCompatActivity {
             String username = editTextUsername.getText().toString();
             shareCredentials(username, generatedPassword);
         });
+
+        String url = "jdbc:mysql://localhost/test";
+        String u = "admin"; // hard-coded credential
+
+        try {
+            getConn(url, u, "password"); // hard-coded credential
+        } catch (SQLException e) {
+            // Throw toast message
+            Toast.makeText(this, "Failed to connect to the database", Toast.LENGTH_SHORT).show();
+        }
     }
 
     // Implicit intent to share information that could be intercepted by other apps.
@@ -42,14 +56,11 @@ public class MainActivity extends AppCompatActivity {
         startActivity(Intent.createChooser(intent, "Save"));
     }
 
-    // BAD: broadcast sensitive information to all listeners
-    public void sendBroadcast1(Context context, String token, String refreshToken) {
-        Intent intent = new Intent();
-        intent.setAction("com.example.custom_action");
-        intent.putExtra("token", token);
-        intent.putExtra("refreshToken", refreshToken);
-        context.sendBroadcast(intent);
+    // Hard-coded credentials in the source code.
+    private void getConn(String url, String u, String p) throws SQLException {
+        DriverManager.getConnection(url, u, p);
     }
+
 
 
 }
