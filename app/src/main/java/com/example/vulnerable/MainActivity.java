@@ -42,5 +42,14 @@ public class MainActivity extends AppCompatActivity {
         startActivity(Intent.createChooser(intent, "Save"));
     }
 
+    // BAD: broadcast sensitive information to all listeners
+    public void sendBroadcast1(Context context, String token, String refreshToken) {
+        Intent intent = new Intent();
+        intent.setAction("com.example.custom_action");
+        intent.putExtra("token", token);
+        intent.putExtra("refreshToken", refreshToken);
+        context.sendBroadcast(intent);
+    }
+
 
 }
